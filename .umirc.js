@@ -45,6 +45,14 @@ export default {
             path: 'https://antd.formilyjs.org',
           },
           {
+            title: '@formily/antd-v5',
+            path: 'https://antd5.formilyjs.org',
+          },
+          {
+            title: '@formily/antd-mobile',
+            path: 'https://antd-mobile.formilyjs.org',
+          },
+          {
             title: '@formily/next',
             path: 'https://fusion.formilyjs.org',
           },
@@ -59,6 +67,10 @@ export default {
           {
             title: '@formily/antdv',
             path: 'https://antdv.formilyjs.org',
+          },
+          {
+            title: '@formily/antdv-x3',
+            path: 'https://antdv-x3.formilyjs.org',
           },
           {
             title: '@formily/vant',
@@ -150,6 +162,14 @@ export default {
           {
             title: '@formily/antd',
             path: 'https://antd.formilyjs.org',
+          },
+          {
+            title: '@formily/antd-v5',
+            path: 'https://antd5.formilyjs.org',
+          },
+          {
+            title: '@formily/antd-mobile',
+            path: 'https://antd-mobile.formilyjs.org',
           },
           {
             title: '@formily/next',
@@ -258,7 +278,7 @@ export default {
   links: [
     {
       rel: 'stylesheet',
-      href: 'https://unpkg.com/antd/dist/antd.css',
+      href: 'https://unpkg.com/antd@4.x/dist/antd.css',
     },
   ],
   styles: [

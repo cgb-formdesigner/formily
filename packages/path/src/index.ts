@@ -37,12 +37,7 @@ const getIn = (segments: Segments, source: any) => {
     const index = segments[i]
     const rules = getDestructor(index as string)
     if (!rules) {
-      if (!isValid(source)) {
-        if (i !== segments.length - 1) {
-          return source
-        }
-        break
-      }
+      if (!isValid(source)) return
       source = source[index]
     } else {
       source = getInByDestructor(source, rules, { setIn, getIn })
@@ -518,15 +513,12 @@ export class Path {
   }
 
   static isPathPattern(target: any): target is Pattern {
-    if (
+    return !!(
       isStr(target) ||
       isArr(target) ||
       isRegExp(target) ||
       (isFn(target) && target[isMatcher])
-    ) {
-      return true
-    }
-    return false
+    )
   }
 
   static transform<T>(

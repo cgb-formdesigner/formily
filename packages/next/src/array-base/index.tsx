@@ -3,14 +3,7 @@ import { Button } from '@alifd/next'
 import { isValid, clone } from '@formily/shared'
 import { ButtonProps } from '@alifd/next/lib/button'
 import { ArrayField } from '@formily/core'
-import {
-  useField,
-  useFieldSchema,
-  Schema,
-  JSXComponent,
-  RecordScope,
-  RecordsScope,
-} from '@formily/react'
+import { useField, useFieldSchema, Schema, JSXComponent } from '@formily/react'
 import { SortableHandle } from 'react-sortable-hoc'
 import {
   usePrefixCls,
@@ -38,7 +31,7 @@ export interface IArrayBaseContext {
 
 export interface IArrayBaseItemProps {
   index: number
-  record: any
+  record: ((index: number) => Record<string, any>) | Record<string, any>
 }
 
 export type ArrayBaseMixins = {
@@ -77,7 +70,8 @@ const ArrayBaseContext = createContext<IArrayBaseContext>(null)
 
 const ItemContext = createContext<IArrayBaseItemProps>(null)
 
-const takeRecord = (val: any) => (typeof val === 'function' ? val() : val)
+const takeRecord = (val: any, index?: number) =>
+  typeof val === 'function' ? val(index) : val
 
 const useArray = () => {
   return useContext(ArrayBaseContext)
@@ -90,7 +84,7 @@ const useIndex = (index?: number) => {
 
 const useRecord = (record?: number) => {
   const ctx = useContext(ItemContext)
-  return takeRecord(ctx ? ctx.record : record)
+  return takeRecord(ctx ? ctx.record : record, ctx?.index)
 }
 
 const getSchemaDefaultValue = (schema: Schema) => {
@@ -107,33 +101,22 @@ const getSchemaDefaultValue = (schema: Schema) => {
 const getDefaultValue = (defaultValue: any, schema: Schema) => {
   if (isValid(defaultValue)) return clone(defaultValue)
   if (Array.isArray(schema?.items))
-    return getSchemaDefaultValue(schema.items[0])
-  return getSchemaDefaultValue(schema.items)
+    return getSchemaDefaultValue(schema?.items[0])
+  return getSchemaDefaultValue(schema?.items)
 }
 
 export const ArrayBase: ComposedArrayBase = (props) => {
   const field = useField<ArrayField>()
   const schema = useFieldSchema()
   return (
-    <RecordsScope getRecords={() => field.value}>
-      <ArrayBaseContext.Provider value={{ field, schema, props }}>
-        {props.children}
-      </ArrayBaseContext.Provider>
-    </RecordsScope>
+    <ArrayBaseContext.Provider value={{ field, schema, props }}>
+      {props.children}
+    </ArrayBaseContext.Provider>
   )
 }
 
 ArrayBase.Item = ({ children, ...props }) => {
-  return (
-    <ItemContext.Provider value={props}>
-      <RecordScope
-        getIndex={() => props.index}
-        getRecord={() => takeRecord(props.record)}
-      >
-        {children}
-      </RecordScope>
-    </ItemContext.Provider>
-  )
+  return <ItemContext.Provider value={props}>{children}</ItemContext.Provider>
 }
 
 const SortHandle = SortableHandle((props: any) => {
